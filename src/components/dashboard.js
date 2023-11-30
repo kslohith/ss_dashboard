@@ -9,6 +9,9 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -72,6 +75,7 @@ const Dashboard = () => {
     const [activeIndex, setActiveIndex] = useState();
     const [venues, setVenues] = useState();
     const [eventPopularity, setEventPopularity] = useState();
+    const [abtest, setabtest] = useState();
 
     useEffect(() => {
         setShowLoading(true);
@@ -180,6 +184,19 @@ const Dashboard = () => {
     const onPieEnter = (_, index) => {
         setActiveIndex(index);
       };
+
+    const handleABtest = (e) => {
+        setabtest(e.target.checked);
+        axios({
+          method: 'post',
+          url: 'https://sportssync-backend.onrender.com/toggleABtest',
+          headers: {},
+          data: {
+            enableABtest: e.target.checked
+          },
+        })
+    }
+    
     return(
         <>
         {showLoading && <Box sx={{ display: 'flex' }}>
@@ -187,11 +204,21 @@ const Dashboard = () => {
             </Box>
         }
         <Grid container spacing={2}>
+            {abtest && <Grid item xs={12} style={{background: '#ffffcc'}}>
+                <Typography variant="h5" gutterBottom>
+                    Application under A/B Test
+                </Typography>
+            </Grid>}
             <Grid item xs={12}>
                 <Typography variant="h5" gutterBottom>
-                    SportSync Data Insights
+                    SportSync Admin Dashboard
                 </Typography>
             </Grid>
+
+            <Grid item xs={6}>
+              <FormControlLabel  control={<Switch />} label="Enable a/b testing ?" onChange={handleABtest}/>
+            </Grid>
+
             <Grid item sx={7.5}>
                 <p>Event Popularity By Skill Level</p>
                 <Item>
